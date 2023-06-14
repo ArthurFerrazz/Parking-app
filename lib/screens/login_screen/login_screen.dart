@@ -68,7 +68,9 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: (() {}),
+                        onPressed: (() {
+                          Navigator.pushReplacementNamed(context, 'home');
+                        }),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
