@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:teste/main.dart';
 
-alertDialog({required Function() function}) {
+alertDialog({required Function() function, String title = 'Alerta', String content = 'Algo inesperado aconteceu!'}) {
   return showDialog(
       context: navigatorKey!.currentContext!,
       builder: (BuildContext context) {
@@ -18,7 +18,7 @@ alertDialog({required Function() function}) {
             ),
             child: Center(
               child: Text(
-                'Alerta',
+                title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Theme.of(context)
@@ -30,7 +30,7 @@ alertDialog({required Function() function}) {
             ),
           ),
           content: Text(
-              'Tem certeza que deseja deletar este estacionamento?',
+              content,
               textAlign: TextAlign.center,
               style:
               Theme.of(context).textTheme.bodyLarge),
