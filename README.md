@@ -1,6 +1,3 @@
-# Parking-app
-Protótipo da aplicação web do serviço de estacionamento
-
 # teste
 
 A new Flutter project.
