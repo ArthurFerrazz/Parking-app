@@ -33,8 +33,7 @@ class _MainAddParkingFormState extends State<MainAddParkingForm> {
   TextEditingController boolController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var cnpjFormatter = MaskTextInputFormatter(
-      mask: '##.###.###/####-##', type: MaskAutoCompletionType.lazy
-  );
+      mask: '##.###.###/####-##', type: MaskAutoCompletionType.lazy);
 
   @override
   Widget build(BuildContext context) {
@@ -56,19 +55,21 @@ class _MainAddParkingFormState extends State<MainAddParkingForm> {
               runSpacing: 10,
               children: [
                 FormContainer(
-                    width: 300,
-                    label: 'Nome do estacionamento:',
-                    child: TextFormField(
-                      controller: nomeController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                      ),
-                      validator: (value) {
-                        if(value != null && value.isEmpty) {
-                          return 'O campo nao pode ser vazio';
-                        }
-                      },
+                  width: 300,
+                  label: 'Nome do estacionamento:',
+                  child: TextFormField(
+                    controller: nomeController,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
                     ),
+                    validator: (value) {
+                      if (value != null && value.isEmpty) {
+                        return 'Campo vazio';
+                      } else if (value != null && value.length > 35) {
+                        return 'ultrapassou o limite de caracteres';
+                      }
+                    },
+                  ),
                 ),
                 FormContainer(
                   width: 300,
@@ -87,12 +88,20 @@ class _MainAddParkingFormState extends State<MainAddParkingForm> {
                 FormContainer(
                   width: 300,
                   label: 'Endereço:',
-                  child: TextField(
-                    controller: enderecoController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                    ),
-                  ),
+                  child: TextFormField(
+                      controller: enderecoController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo vazio';
+                        } else if (value.length < 5) {
+                          return 'O endereço deve ter no mínimo 5 caracteres';
+                        } else if (value.length > 100) {
+                          return 'O endereço deve ter no máximo 100 caracteres';
+                        }
+                      }),
                 ),
                 const DayDropDownRow(),
               ],
@@ -110,11 +119,20 @@ class _MainAddParkingFormState extends State<MainAddParkingForm> {
                       FormContainer(
                         width: 150,
                         label: 'Qtd. Vagas:',
-                        child: TextField(
+                        child: TextFormField(
                           controller: qtdVagasController,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                           ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo vazio';
+                            }
+                            final parsedValue = int.tryParse(value);
+                            if (parsedValue == null || parsedValue <= 0) {
+                              return 'Numero inválido';
+                            }
+                          },
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                           ],
@@ -149,12 +167,21 @@ class _MainAddParkingFormState extends State<MainAddParkingForm> {
                   child: FormContainer(
                       width: 170,
                       label: 'CEP:',
-                      child: TextField(
+                      child: TextFormField(
                         controller: cepController,
                         keyboardType: TextInputType.phone,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo vazio';
+                          }
+                          final cepPattern = RegExp(r'^\d{8}$');
+                          if (!cepPattern.hasMatch(value)) {
+                            return 'CEP inválido';
+                          }
+                        },
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                         ],
@@ -219,14 +246,12 @@ class _MainAddParkingFormState extends State<MainAddParkingForm> {
                                 ? double.parse(precoController.text)
                                 : null,
                           );
-                          DiaDeFuncionamento diaDeFuncionamento = DiaDeFuncionamento(
-                            inicio: _startDay,
-                            fim: _endDay
-                          );
+                          DiaDeFuncionamento diaDeFuncionamento =
+                              DiaDeFuncionamento(
+                                  inicio: _startDay, fim: _endDay);
                           Horario horario = Horario(
-                            horaAbertura: startHourController.text,
-                            horaFechamento: endHourController.text
-                          );
+                              horaAbertura: startHourController.text,
+                              horaFechamento: endHourController.text);
                           final cnpj = cnpjController.text
                               .replaceAll(RegExp(r'[./-]'), '');
                           final telefone = _phoneController.text
@@ -380,9 +405,8 @@ class HorarioRow extends StatefulWidget {
 }
 
 class _HorarioRowState extends State<HorarioRow> {
-  var horarioFormatter = MaskTextInputFormatter(
-      mask: '##:##', type: MaskAutoCompletionType.lazy
-  );
+  var horarioFormatter =
+      MaskTextInputFormatter(mask: '##:##', type: MaskAutoCompletionType.lazy);
 
   @override
   Widget build(BuildContext context) {
@@ -404,25 +428,25 @@ class _HorarioRowState extends State<HorarioRow> {
           spacing: 16,
           children: [
             Container(
-                width: 80,
-                padding: const EdgeInsets.only(left: 12.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(
-                    width: 1.5,
-                    color: Colors.grey,
-                  ),
+              width: 80,
+              padding: const EdgeInsets.only(left: 12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(
+                  width: 1.5,
+                  color: Colors.grey,
                 ),
-                child: TextFormField(
-                  controller: startHourController,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    horarioFormatter
-                  ],
+              ),
+              child: TextFormField(
+                controller: startHourController,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  horarioFormatter
+                ],
+              ),
             ),
             const Text(
               'Às',
@@ -542,18 +566,18 @@ class DayDropDownRow extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             Container(
-                width: 150,
-                padding: const EdgeInsets.only(left: 12.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  border: Border.all(
-                    width: 1.5,
-                    color: Colors.grey,
-                  ),
+              width: 150,
+              padding: const EdgeInsets.only(left: 12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(
+                  width: 1.5,
+                  color: Colors.grey,
                 ),
-                child: DayDropDown(
-                  day: _endDay,
-                ),
+              ),
+              child: DayDropDown(
+                day: _endDay,
+              ),
             ),
           ],
         )
